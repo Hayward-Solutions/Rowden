@@ -12,6 +12,7 @@ jobs:
           gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt-get install -y terraform
+          terraform version
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: terraform init
