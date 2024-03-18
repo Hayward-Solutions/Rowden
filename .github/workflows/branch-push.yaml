@@ -1,0 +1,23 @@
+name: Terraform Validate
+run-name: ${{ github.actor }} Terraform Validate
+on:
+  - push
+jobs:
+  Validate:
+    runs-on: ubuntu-latest
+    environment: nonprod
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Init
+        working-directory: ./terraform
+        run: terraform init ${{ secrets.BACKEND_CONFIG }}
+      - name: Format Check
+        working-directory: ./terraform
+        run: terraform fmt -check -recursive
+      - name: Validate
+        working-directory: ./terraform
+        run: terraform validate
