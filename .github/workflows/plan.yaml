@@ -12,7 +12,7 @@ jobs:
         working-directory: ./terraform
         run: |
           
-          echo "VAR FILE: $VAR_FILE
+          echo "VAR FILE: $VAR_FILE"
           
           terraform init $BACKEND_CONFIG
           terraform plan $BACKEND_CONFIG \
