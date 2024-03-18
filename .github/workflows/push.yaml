@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} Terraform Validate
 on:
   - push
 jobs:
-  TerraformPlan:
+  Validate:
     runs-on: ubuntu-latest
     environment: nonprod
     env:
