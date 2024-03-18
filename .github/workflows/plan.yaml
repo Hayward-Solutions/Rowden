@@ -11,10 +11,7 @@ jobs:
       - name: terraform
         working-directory: ./terraform
         run: |
-          
-          echo "VAR FILE: $VAR_FILE"
-          
-          terraform init $BACKEND_CONFIG
-          terraform plan $BACKEND_CONFIG \
-            -var-file "$VAR_FILE" \
-            -var "role_arn=$ROLE_ARN"
+          terraform init ${{ secrets.BACKEND_CONFIG }}
+          terraform plan ${{ vars.VAR_FILE }} \
+            -var-file "${{ vars.VAR_FILE }}" \
+            -var "role_arn=${{ secrets.ROLE_ARN }}"
