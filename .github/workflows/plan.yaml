@@ -1,0 +1,15 @@
+name: Terraform Plan
+run-name: ${{ github.actor }} Terraform Plan
+on: [push]
+jobs:
+  TerraformPlan:
+    runs-on: terraform:1.7.5
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: terraform init
+        run: terraform init $BACKEND_CONFIG
+      - name: terraform plan
+        run: terraform plan $BACKEND_CONFIG \
+                -var-file "./tfvars/dev-eu-west-2.tfvars" \
+                -var "role_arn=$ROLE_ARN"
