@@ -19,15 +19,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Init
-        id: init
         working-directory: ./terraform
         run: terraform init ${{ secrets.BACKEND_CONFIG }}
 
       - name: Plan
         id: plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" >> $GITHUB_OUTPUT
-
+        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
 
       - name: Comment PR
         uses: actions/github-script@v3
@@ -38,7 +36,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "${{ steps.plan.outputs.* }}"
+              body: `Terraform Plan: \n`${{ steps.plan.outputs.stdout }}``
             })
 
 #      - name: PlanToComment
