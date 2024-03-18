@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: nonprod
     outputs:
-      plan: ${{ steps.plan.outputs.plan }}
+      plan: ${{ steps.plan.env.plan }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -27,10 +27,11 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
-          CHANGES="<<EOF
-          $(terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)")
-          EOF"
-          echo "plan=$CHANGES" >> "$GITHUB_OUTPUT"
+          {
+            echo 'plan<<EOF'
+            terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)"
+            echo EOF
+          } >> "$GITHUB_ENV"
 
   PublishToPR:
     runs-on: ubuntu-latest
