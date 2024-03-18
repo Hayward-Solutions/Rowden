@@ -39,7 +39,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Terraform checks in directory '${{ matrix.directory }}'\n` + output
+              body: `## Terraform checks in directory 'terraform '\n` + output
             })
 
 #      - name: PlanToComment
