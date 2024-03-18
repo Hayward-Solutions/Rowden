@@ -9,8 +9,8 @@ jobs:
   TerraformPlan:
     runs-on: ubuntu-latest
     environment: nonprod
-    permissions:
-      pull-requests: write
+    outputs:
+      plan: ${{ steps.plan.outputs.plan }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -28,9 +28,19 @@ jobs:
         run: |
           terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
           CHANGES=$(terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)")
+          echo "plan=$CHANGES" >> "$GITHUB_OUTPUT"
 
+  PublishToPR:
+    runs-on: ubuntu-latest
+    needs:
+      - TerraformPlan
+    permissions:
+      pull-requests: write
+    steps:
       - name: Comment PR
         uses: actions/github-script@v3
+        env:
+          PLAN: ${{needs.TerraformPlan.outputs.plan}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -38,7 +48,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Terraform Plan: \n${{ steps.plan.outputs.CHANGES }}`
+              body: `## Terraform Plan: \n$PLAN`
             })
 
 #      - name: PlanToComment
