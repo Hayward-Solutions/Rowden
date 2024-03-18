@@ -30,7 +30,7 @@ jobs:
         run: |
           terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
           echo "PLAN<<EOF" >> $GITHUB_ENV
-          terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)" >> $GITHUB_ENV 
+          terraform plan -no-color -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)" >> $GITHUB_ENV 
           echo "EOF" >> $GITHUB_ENV
 
       - name: Comment PR
