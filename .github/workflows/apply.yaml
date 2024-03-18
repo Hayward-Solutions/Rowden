@@ -1,0 +1,27 @@
+name: Terraform Apply
+run-name: ${{ github.actor }} Terraform Apply
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  TerraformApply:
+    runs-on: ubuntu-latest
+    environment: nonprod
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Init
+        working-directory: ./terraform
+        run: terraform init ${{ secrets.BACKEND_CONFIG }}
+
+      - name: Apply
+        id: apply
+        working-directory: ./terraform
+        run: |
+          terraform apply -auto-approve -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
