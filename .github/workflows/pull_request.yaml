@@ -36,7 +36,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Terraform Plan: \n`${{ steps.plan.outputs.stdout }}``
+              body: `## Terraform Plan: \n\`${{ steps.plan.outputs.stdout }}\``
             })
 
 #      - name: PlanToComment
