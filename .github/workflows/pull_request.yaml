@@ -24,7 +24,7 @@ jobs:
 
       - name: Plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | tee ${{ github.workspace }}/plan_output.txt
+        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" -no-color 2>&1 | tee ${{ github.workspace }}/plan_output.txt
 
       - name: Comment Terraform Plan on PR
         uses: blinqas/tf-plan-pr-comment@v1
