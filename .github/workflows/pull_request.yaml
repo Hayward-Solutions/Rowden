@@ -24,19 +24,27 @@ jobs:
 
       - name: Plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
+        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | tee ${{ github.workspace }}/plan_output.txt
 
-      - name: PlanToComment
-        working-directory: ./terraform
-        run: |
-          CHANGES=$(terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)")
-          
-          echo $CHANGES
-          
-          curl \
-            -s \
-            -X POST \
-            ${{ github.event.pull_request.comments_url }} \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            --data "$CHANGES"
+      - name: Comment Terraform Plan on PR
+        uses: blinqas/tf-plan-pr-comment@v1
+        with:
+          output_file: "${{ github.workspace }}/plan_output.txt"
+          headline: "### Terraform Plan"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: PlanToComment
+#        working-directory: ./terraform
+#        run: |
+#          CHANGES=$(terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)")
+#
+#          echo $CHANGES
+#
+#          curl \
+#            -s \
+#            -X POST \
+#            ${{ github.event.pull_request.comments_url }} \
+#            -H "Content-Type: application/json" \
+#            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+#            --data "$CHANGES"
