@@ -26,20 +26,18 @@ jobs:
       - name: Plan
         id: plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" -no-color 2>&1 | tee ${{ github.workspace }}/plan_output.txt
+        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
 
       - name: Comment PR
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Plan 📖\`${{ steps.plan.outputs.stdout }}\`
-            
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Terraform checks in directory 'terraform '\n` + output
+              body: ${{ steps.plan.outputs.stdout }}
             })
 
 #      - name: PlanToComment
