@@ -7,9 +7,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+      - run: cd terraform
       - name: terraform init
-        run: cd terraform; terraform init $BACKEND_CONFIG
+        run: terraform init $BACKEND_CONFIG
       - name: terraform plan
-        run: cd terraform; terraform plan $BACKEND_CONFIG \
+        run: terraform plan $BACKEND_CONFIG \
                 -var-file "$VAR_FILE" \
                 -var "role_arn=$ROLE_ARN"
