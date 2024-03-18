@@ -30,6 +30,9 @@ jobs:
         working-directory: ./terraform
         run: |
           CHANGES=$(terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" | grep "Plan:\|# " | grep -v "(\|)")
+          
+          echo $CHANGES
+          
           curl \
             -s \
             -X POST \
