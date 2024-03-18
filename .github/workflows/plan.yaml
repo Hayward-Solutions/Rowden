@@ -15,8 +15,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: terraform init
-        run: terraform init $BACKEND_CONFIG
+        run: cd terraform; terraform init $BACKEND_CONFIG
       - name: terraform plan
-        run: terraform plan $BACKEND_CONFIG \
+        run: cd terraform; terraform plan $BACKEND_CONFIG \
                 -var-file "./tfvars/dev-eu-west-2.tfvars" \
                 -var "role_arn=$ROLE_ARN"
