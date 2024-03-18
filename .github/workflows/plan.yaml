@@ -8,10 +8,11 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: terraform
+      - name: Init
         working-directory: ./terraform
-        run: |
-          terraform init ${{ secrets.BACKEND_CONFIG }}
-          terraform plan \
-            -var-file "${{ vars.VAR_FILE }}" \
-            -var "role_arn=${{ secrets.ROLE_ARN }}"
+        run: terraform init ${{ secrets.BACKEND_CONFIG }}
+      - name: Plan
+        working-directory: ./terraform
+        run: terraform plan \
+              -var-file "${{ vars.VAR_FILE }}" \
+              -var "role_arn=${{ secrets.ROLE_ARN }}"
