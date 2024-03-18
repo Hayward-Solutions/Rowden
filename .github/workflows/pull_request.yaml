@@ -25,7 +25,6 @@ jobs:
         run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
 
       - name: PlanToComment
-        uses: actions/github-script@v6
         working-directory: ./terraform
         run: |
           terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" \
