@@ -1,0 +1,38 @@
+name: Terraform Plan PR
+run-name: ${{ github.actor }} Terraform PR Plan
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  TerraformPlan:
+    runs-on: ubuntu-latest
+    environment: nonprod
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Init
+        working-directory: ./terraform
+        run: terraform init ${{ secrets.BACKEND_CONFIG }}
+
+      - name: Plan
+        working-directory: ./terraform
+        run: terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}"
+
+      - name: PlanToComment
+        working-directory: ./terraform
+        run: |
+          terraform plan -var-file="${{ vars.VAR_FILE }}" -var="role_arn=${{ secrets.ROLE_ARN }}" \
+            | grep "# \|Plan: \|" > terraform.txt
+          
+          curl \
+            -X POST \
+            ${{ github.event.pull_request.comments_url }} \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            --data '{ "body": terraform.txt }'
