@@ -12,6 +12,6 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform init ${{ secrets.BACKEND_CONFIG }}
-          terraform plan ${{ vars.VAR_FILE }} \
+          terraform plan \
             -var-file "${{ vars.VAR_FILE }}" \
             -var "role_arn=${{ secrets.ROLE_ARN }}"
