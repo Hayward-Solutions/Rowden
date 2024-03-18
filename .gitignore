@@ -1,0 +1,5 @@
+.idea
+terraform/backend.tf
+terraform/.terraform
+terraform/.terraform.lock.hcl
+lambda/*/lambda.zip
