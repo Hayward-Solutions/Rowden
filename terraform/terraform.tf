@@ -1,13 +1,15 @@
 terraform {
+
+  backend "s3" {}
+
   required_providers {
     aws = {
       version = "5.41.0"
     }
   }
 
-  required_version = "= 1.7.5"
+  required_version = ">= 1.7.4"
 }
-
 
 provider "aws" {
   region = var.region
